@@ -2,7 +2,7 @@
 
 echo "pre-commit"
 
-JS=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }' | sed -E '/i18n|bemjson\.js$/d' | sed -n '/\.js$/p'`
+JS=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }' | sed -n '/\.js$/p'`
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 if [ "$JS" ]; then

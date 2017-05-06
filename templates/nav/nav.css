@@ -1,3 +1,27 @@
 .nav {
-	background-color: red;
+    width: 100%
+}
+
+.nav__list {
+    display: table;
+    padding: 0;
+    width: 100%;
+}
+
+.nav__item {
+    display: table-cell;
+    background-color: #ADE7F8;
+    text-align: center;
+    border-right: solid 2px white;
+}
+
+.nav__item:last-child {
+    border: none;
+}
+
+.nav__item a {
+    display: inline-block;
+    padding: 10px 15px;
+    color: black;
+    text-decoration: none;
 }

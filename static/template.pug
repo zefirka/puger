@@ -2,9 +2,15 @@ doctype html
 
 html
   include blocks/head.pug
-  style !{css}
+  style.main !{css}
 
   body
     h1 #{view}
     a(href="/") Back 
-    .container !{tpl}
+    .container.js-content !{tpl}
+    h2 Data
+    .container
+        textarea.data.js-codemirror(file-name=view) !{data}
+    h2 CSS
+    .container
+        textarea.data.css-codemirror !{css}

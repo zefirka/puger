@@ -1,4 +1,5 @@
-ul.nav
-    each val in locals.items
-        li.nav__item
-            a(href=val.href)= val.text
+.nav
+    ul.nav__list
+        each val in locals.items
+            li.nav__item
+                a(href=val.href)= val.text

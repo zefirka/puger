@@ -1,7 +1,7 @@
 'use strict';
 
 const {
-	port: defaultPort
+    port: defaultPort
 } = require('./server/config');
 
 const app = require('./server/app');

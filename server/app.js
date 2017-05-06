@@ -2,6 +2,8 @@
 
 const fs = require('fs');
 
+const {js_beautify: beautify} = require('js-beautify');
+
 const {
     resolve,
     join
@@ -39,12 +41,30 @@ app.get('/', (req, res) => {
     });
 });
 
+app.post('/update/', (req, res) => {
+    const {
+        file,
+        value
+    } = req.body;
+
+    try {
+        updateView(file, JSON.parse(value)).then(view => {
+            res.send(view);
+        });
+    } catch (e) {
+        throw new Error(e);
+    }
+});
+
 app.get('/views/*', (req, res) => {
     getView(req.path).then(([tpl, css, data, viewName]) => {
         const compile = pug.compile(tpl);
-        var template = compile(data);
+        var template = compile(JSON.parse(data));
 
         res.render('template', {
+            data: beautify(data, {
+                indent_size: 4
+            }),
             css,
             tpl: template,
             view: viewName
@@ -65,7 +85,16 @@ function getView(p) {
         '.json'
     ].map(ext => resolve(fileName + ext))
     .map(read))
-    .then(([tpl, css, data]) => [tpl, css, JSON.parse(data), fileName]);
+    .then(([tpl, css, data]) => [tpl, css, data, fileName]);
+}
+
+function updateView(file, data) {
+    const fileName = resolve(file + '.pug');
+
+    return read(fileName).then(tpl => {
+        const compile = pug.compile(tpl);
+        return compile(data);
+    });
 }
 
 function read(file) {
@@ -81,6 +110,7 @@ function read(file) {
 }
 
 app.use(express.static('static'));
+app.use(express.static('node_modules'));
 
 module.exports = app;
 
