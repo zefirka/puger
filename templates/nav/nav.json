@@ -1,0 +1,12 @@
+{
+	"items": [
+		{
+			"text": "Main",
+			"href": "/"
+		},
+		{
+			"text": "Login",
+			"href": "/login"
+		}
+	]
+}

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# no files, exit
+if [ $# -eq 0 ]; then
+    exit
+fi
+
+echo '[eslint]'
+node_modules/.bin/eslint --quiet $* || ERRORS=1
+
+exit $ERRORS

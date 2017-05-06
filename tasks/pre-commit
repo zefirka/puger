@@ -1,0 +1,22 @@
+#!/bin/sh
+
+echo "pre-commit"
+
+JS=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }' | sed -E '/i18n|bemjson\.js$/d' | sed -n '/\.js$/p'`
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+if [ "$JS" ]; then
+  ./tasks/lint-js $JS || ERRORS=1
+fi
+
+if [ "$CURRENT_BRANCH" == "master" ]; then
+    echo "Please do not commit to master"
+    ERRORS=1
+fi
+
+if [ "$CURRENT_BRANCH" == "develop" ]; then
+    echo "Please do not commit to develop"
+    ERRORS=1
+fi
+
+exit $ERRORS

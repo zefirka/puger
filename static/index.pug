@@ -1,0 +1,12 @@
+doctype html
+
+html
+  include blocks/head.pug
+
+  body
+    h1 Pug template viewer
+    h3 Templates:
+    ul.template-list
+        each val in locals.blocks
+            li.template-list__item
+                a(href=`/views/${val}`)= val

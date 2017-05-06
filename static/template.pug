@@ -1,0 +1,10 @@
+doctype html
+
+html
+  include blocks/head.pug
+  style !{css}
+
+  body
+    h1 #{view}
+    a(href="/") Back 
+    .container !{tpl}

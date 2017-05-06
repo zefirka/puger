@@ -1,0 +1,20 @@
+include ../variables.pug
+
+- const title = locals.title || META.TITLE;
+- const description = locals.description || META.DESCRIPTION;
+
+- const scripts = META.SCRIPTS.concat(locals.scripts);
+- const styles = META.STYLES.concat(locals.styles);
+
+
+head
+	title #{title}
+
+	meta(charset=META.CHARSET)
+	meta(description=description)
+
+	each url in scripts
+		script(type='text/javascript' src=url)
+
+	each url in styles
+		link(rel='stylesheet' href=url)
