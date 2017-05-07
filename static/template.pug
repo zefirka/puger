@@ -14,7 +14,7 @@ html
 
         ul.nav.nav-tabs.js-tabs(role="tablist")
             li.active(role="presentation")
-                a(href="#js" role="tab" data-toggle="tab" tab="js")
+                a(href="#json" role="tab" data-toggle="tab" tab="json")
                     h2 Data
             li(role="presentation")
                 a(href="#css" role="tab" data-toggle="tab" tab="css")
@@ -24,12 +24,15 @@ html
                     h2 Pug
 
         .tab-content
-            .tab-pane.active#js(role="tabpanel")
+            .tab-pane.active#json(role="tabpanel" tab="json")
                 .content
-                    textarea.data.js-codemirror(file-name=view) !{data}  
-            .tab-pane#css(role="tabpanel")
+                    textarea.data.json-codemirror(file-name=view) !{data}  
+            .tab-pane#css(role="tabpanel" tab="css")
                 .content
                     textarea.data.css-codemirror !{css}
-            .tab-pane#pug(role="tabpanel")
+            .tab-pane#pug(role="tabpanel" tab="pug")
                 .content
                     textarea.data.pug-codemirror !{pugtpl}
+        .buttons-row
+            span.btn.btn-success.js-save Save
+            span.btn.btn-danger.js-drop Drop

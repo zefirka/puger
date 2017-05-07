@@ -63,6 +63,25 @@ app.post('/update/', (req, res) => {
     }
 });
 
+app.post('/save/', (req, res) => {
+    const {
+        file,
+        value,
+        type
+    } = req.body;
+
+    saveFile(file, type, value).then(function () {
+        res.json({
+            ok: true
+        });
+    }).catch(function (error) {
+        res.json({
+            ok: false,
+            error
+        });
+    });
+});
+
 app.get('/views/*', (req, res) => {
     getView(req.path).then(([tpl, css, data, viewName]) => {
         const compile = pug.compile(tpl);
@@ -106,6 +125,12 @@ function updateView(file, data) {
     });
 }
 
+function saveFile(file, type, data) {
+    const fileName = resolve(file + '.' + type);
+    return write(fileName, data);
+
+}
+
 function updatePug(pugfile, data) {
     const compile = pug.compile(pugfile);
     return Promise.resolve(compile(data));
@@ -119,6 +144,18 @@ function read(file) {
             }
 
             res(data.toString());
+        });
+    });
+}
+
+function write(file, data) {
+    return new Promise((res, rej) => {
+        fs.writeFile(file, data, (err, data) => {
+            if (err) {
+                rej(err);
+            }
+
+            res(data);
         });
     });
 }

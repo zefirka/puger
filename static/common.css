@@ -19,3 +19,11 @@ body {
 .js-content {
 	padding: 10px;
 }
+
+.buttons-row {
+	display: none;
+}
+
+.buttons-row .btn {
+	margin-right: 10px;
+}

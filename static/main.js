@@ -1,14 +1,14 @@
 'use strict';
 
 $(function () {
-    var jsTextArea = $('.js-codemirror');
+    var jsonTextArea = $('.json-codemirror');
     var cssTextArea = $('.css-codemirror');
     var pugTextArea = $('.pug-codemirror');
 
-    var file = jsTextArea.attr('file-name');
+    var file = jsonTextArea.attr('file-name');
 
     function initJs() {
-        return CodeMirror.fromTextArea(jsTextArea[0], {
+        return CodeMirror.fromTextArea(jsonTextArea[0], {
             mode: 'json',
             lineNumbers: true
         });
@@ -28,26 +28,36 @@ $(function () {
         });
     }
 
-    function updateText(c) {
-        var $el = $(`[tab="${c}"] h2`);
+    function updateText(c, drop) {
+        var $el = $(`a[tab="${c}"] h2`);
+
+
         if (!$el.attr('data-updated')) {
             $el.text($el.text() + ' *')
             $el.attr('data-updated', 'true')
+            
+            $('.buttons-row').show();
+        }
+
+        if (drop) {
+            $el.text($el.text().slice(0, -2))
+            $el.removeAttr('data-updated');
+            $('.buttons-row').hide();
         }
     }
 
-    var jsCodeMirror = initJs();
+    var jsonCodeMirror = initJs();
     var cssCodeMirror = initCss();
     var pugCodeMirror = initPug();
 
     var mirrors = {
-        js: jsCodeMirror,
+        json: jsonCodeMirror,
         css: cssCodeMirror,
         pug: pugCodeMirror
     };
     
     var updateView = debounce(function (event) {
-        updateText('js')
+        updateText('json')
         $.post('/update/', {
             file: file,
             value: event.getValue()
@@ -65,7 +75,7 @@ $(function () {
         updateText('pug');
         $.post('/update/', {
             type: 'pug',
-            json: jsCodeMirror.getValue(),
+            json: jsonCodeMirror.getValue(),
             file: file,
             value: event.getValue()
         }).then(function (data) {
@@ -81,7 +91,25 @@ $(function () {
         mirrors[tab].refresh();
     });
 
-    jsCodeMirror.on('change', updateView);
+    $('.js-save').click(function () {
+        var tab = $('.active.tab-pane').attr('tab');
+
+        $.post('/save/', {
+            value: mirrors[tab].getValue(),
+            type: tab,
+            file: file,
+        }).then(function (data) {
+            if (data.ok) {
+                updateText(tab, true);
+            } else {
+                showError(data.error)
+            }
+        }).catch(function () {
+            debugger
+        })
+    })
+
+    jsonCodeMirror.on('change', updateView);
     cssCodeMirror.on('change', updateCss);
     pugCodeMirror.on('change', updatePug);
 })
