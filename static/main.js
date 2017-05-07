@@ -9,7 +9,11 @@ $(function () {
 
     function initJs() {
         return CodeMirror.fromTextArea(jsonTextArea[0], {
-            mode: 'json',
+            mode: {
+                name: 'javascript',
+                json: true
+            },
+            theme: 'monokai',
             lineNumbers: true
         });
     }
@@ -17,6 +21,7 @@ $(function () {
     function initCss() {
         return  CodeMirror.fromTextArea(cssTextArea[0], {
             mode: 'css',
+            theme: 'monokai',
             lineNumbers: true
         });
     }
@@ -24,6 +29,7 @@ $(function () {
     function initPug() {
         return CodeMirror.fromTextArea(pugTextArea[0], {
             mode: 'pug',
+            theme: 'monokai',
             lineNumbers: true
         });
     }
@@ -56,28 +62,38 @@ $(function () {
         pug: pugCodeMirror
     };
     
-    var updateView = debounce(function (event) {
+    var updateView = debounce(function (mirror, event) {
+        if (event.origin == 'setValue') {
+            return;
+        }
         updateText('json')
         $.post('/update/', {
             file: file,
-            value: event.getValue()
+            value: mirror.getValue()
         }).then(function (data) {
             $('.js-content').html(data);
         })
     }, 300);
 
-    var updateCss = debounce(function (event) {
+    var updateCss = debounce(function (mirror, event) {
+        if (event.origin == 'setValue') {
+            return;
+        }
         updateText('css');
-        $('style.main').html(event.getValue())
+        $('style.main').html(mirror.getValue())
     }, 250);
 
-    var updatePug = debounce(function (event) {
+    var updatePug = debounce(function (mirror, event) {
+        if (event.origin == 'setValue') {
+            return;
+        }
+
         updateText('pug');
         $.post('/update/', {
             type: 'pug',
             json: jsonCodeMirror.getValue(),
             file: file,
-            value: event.getValue()
+            value: mirror.getValue()
         }).then(function (data) {
             $('.js-content').html(data);
         });
@@ -107,6 +123,18 @@ $(function () {
         }).catch(function () {
             debugger
         })
+    });
+
+    $('.js-drop').click(function () {
+        var tab = $('.active.tab-pane').attr('tab');
+
+        $.get('/view/', {
+            file: file,
+            type: tab
+        }).then(function (data) {
+            mirrors[tab].setValue(data);
+            updateText(tab, true);
+        });
     })
 
     jsonCodeMirror.on('change', updateView);

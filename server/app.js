@@ -102,6 +102,18 @@ app.get('/views/*', (req, res) => {
     });
 });
 
+app.get('/view/', (req, res) => {
+    const {
+        type,
+        file
+    } = req.query;
+
+    const fileName = resolve(file + '.' + type);
+    read(fileName).then(data => {
+        res.send(data);
+    });
+});
+
 function getView(p) {
     const particles = p.split('/');
     const viewDir = join.apply(null, [templatesFolder].concat(particles.slice(2)));
