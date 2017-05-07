@@ -63,10 +63,10 @@ $(function () {
     };
     
     var updateView = debounce(function (mirror, event) {
-        if (event.origin == 'setValue') {
-            return;
+        if (event.origin !== 'setValue') {
+            updateText('json');
         }
-        updateText('json')
+        
         $.post('/update/', {
             file: file,
             value: mirror.getValue()
@@ -76,19 +76,18 @@ $(function () {
     }, 300);
 
     var updateCss = debounce(function (mirror, event) {
-        if (event.origin == 'setValue') {
-            return;
+        if (event.origin !== 'setValue') {
+            updateText('css');
         }
-        updateText('css');
+
         $('style.main').html(mirror.getValue())
     }, 250);
 
     var updatePug = debounce(function (mirror, event) {
-        if (event.origin == 'setValue') {
-            return;
+        if (event.origin !== 'setValue') {
+            updateText('pug');
         }
 
-        updateText('pug');
         $.post('/update/', {
             type: 'pug',
             json: jsonCodeMirror.getValue(),

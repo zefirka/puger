@@ -15,6 +15,11 @@ const bodyParser = require('body-parser');
 
 const loger = require('./middlwares/loger.js');
 
+const {
+    saveFile,
+    read,
+} = require('./utils/');
+
 const app = express();
 
 app.set('view engine', 'pug');
@@ -50,6 +55,7 @@ app.post('/update/', (req, res) => {
     } = req.body;
 
     let action;
+
     try {
         action = type === 'pug'
         ? updatePug(value, JSON.parse(json))
@@ -70,11 +76,11 @@ app.post('/save/', (req, res) => {
         type
     } = req.body;
 
-    saveFile(file, type, value).then(function () {
+    saveFile(file, type, value).then(() => {
         res.json({
             ok: true
         });
-    }).catch(function (error) {
+    }).catch(error => {
         res.json({
             ok: false,
             error
@@ -137,39 +143,9 @@ function updateView(file, data) {
     });
 }
 
-function saveFile(file, type, data) {
-    const fileName = resolve(file + '.' + type);
-    return write(fileName, data);
-
-}
-
 function updatePug(pugfile, data) {
     const compile = pug.compile(pugfile);
     return Promise.resolve(compile(data));
-}
-
-function read(file) {
-    return new Promise((res, rej) => {
-        fs.readFile(file, 'utf-8', (err, data) => {
-            if (err) {
-                rej(err);
-            }
-
-            res(data.toString());
-        });
-    });
-}
-
-function write(file, data) {
-    return new Promise((res, rej) => {
-        fs.writeFile(file, data, (err, data) => {
-            if (err) {
-                rej(err);
-            }
-
-            res(data);
-        });
-    });
 }
 
 app.use(express.static('static'));
