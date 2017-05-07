@@ -2,10 +2,9 @@ body {
 	font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
-.container {
+.content {
 	border: solid 2px #eee;
-	padding: 10px;
-	margin-top: 10px;
+	margin: 10px 0;
 }
 
 .data {
@@ -15,4 +14,8 @@ body {
 	font-size: 14px;
 	border:0;
 	padding: 0;
+}
+
+.js-content {
+	padding: 10px;
 }

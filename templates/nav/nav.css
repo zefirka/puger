@@ -6,6 +6,7 @@
     display: table;
     padding: 0;
     width: 100%;
+    margin-bottom: 0;
 }
 
 .nav__item {

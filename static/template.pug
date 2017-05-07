@@ -5,12 +5,31 @@ html
   style.main !{css}
 
   body
-    h1 #{view}
-    a(href="/") Back 
-    .container.js-content !{tpl}
-    h2 Data
     .container
-        textarea.data.js-codemirror(file-name=view) !{data}
-    h2 CSS
-    .container
-        textarea.data.css-codemirror !{css}
+        h1 #{templateName}
+
+        a(href="/") Back 
+
+        .content.js-content !{tpl}
+
+        ul.nav.nav-tabs.js-tabs(role="tablist")
+            li.active(role="presentation")
+                a(href="#js" role="tab" data-toggle="tab" tab="js")
+                    h2 Data
+            li(role="presentation")
+                a(href="#css" role="tab" data-toggle="tab" tab="css")
+                    h2 Css
+            li(role="presentation")
+                a(href="#pug" role="tab" data-toggle="tab" tab="pug")
+                    h2 Pug
+
+        .tab-content
+            .tab-pane.active#js(role="tabpanel")
+                .content
+                    textarea.data.js-codemirror(file-name=view) !{data}  
+            .tab-pane#css(role="tabpanel")
+                .content
+                    textarea.data.css-codemirror !{css}
+            .tab-pane#pug(role="tabpanel")
+                .content
+                    textarea.data.pug-codemirror !{pugtpl}

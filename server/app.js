@@ -44,15 +44,22 @@ app.get('/', (req, res) => {
 app.post('/update/', (req, res) => {
     const {
         file,
-        value
+        value,
+        json,
+        type
     } = req.body;
 
+    let action;
     try {
-        updateView(file, JSON.parse(value)).then(view => {
-            res.send(view);
-        });
+        action = type === 'pug'
+        ? updatePug(value, JSON.parse(json))
+        : updateView(file, JSON.parse(value));
     } catch (e) {
         throw new Error(e);
+    } finally {
+        action.then(view => {
+            res.send(view);
+        });
     }
 });
 
@@ -66,8 +73,10 @@ app.get('/views/*', (req, res) => {
                 indent_size: 4
             }),
             css,
+            pugtpl: tpl,
             tpl: template,
-            view: viewName
+            view: viewName,
+            templateName: viewName.split('/').pop()
         });
     }).catch(err => {
         throw new Error(err);
@@ -95,6 +104,11 @@ function updateView(file, data) {
         const compile = pug.compile(tpl);
         return compile(data);
     });
+}
+
+function updatePug(pugfile, data) {
+    const compile = pug.compile(pugfile);
+    return Promise.resolve(compile(data));
 }
 
 function read(file) {
