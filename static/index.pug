@@ -3,7 +3,7 @@ doctype html
 html
   include blocks/head.pug
 
-  body
+  body(js-module="__index__")
     .container
         h1 Pug template viewer
         h3 Templates:
@@ -11,3 +11,6 @@ html
             each val in locals.blocks
                 li.template-list__item
                     a(href=`/views/${val}`)= val
+                    span(data-item=val).glyphicon.glyphicon-remove.js-remove
+        h3
+            a(href="/new/") Create new template

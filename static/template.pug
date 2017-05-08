@@ -4,7 +4,10 @@ html
   include blocks/head.pug
   style.main !{css}
 
-  body
+  body(
+    js-module="__template__" 
+    module-params=view
+    )   
     .container
         h1 #{templateName}
 
@@ -26,7 +29,7 @@ html
         .tab-content
             .tab-pane.active#json(role="tabpanel" tab="json")
                 .content
-                    textarea.data.json-codemirror(file-name=view) !{data}  
+                    textarea.data.json-codemirror !{data}  
             .tab-pane#css(role="tabpanel" tab="css")
                 .content
                     textarea.data.css-codemirror !{css}
@@ -36,3 +39,5 @@ html
         .buttons-row
             span.btn.btn-success.js-save Save
             span.btn.btn-danger.js-drop Drop
+
+        pre.js-error

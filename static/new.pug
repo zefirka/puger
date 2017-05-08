@@ -1,0 +1,20 @@
+doctype html
+
+html
+  include blocks/head.pug
+  style.main !{css}
+
+  body(js-module="__new__")
+    .container
+        h1 New template
+
+        form.__form
+            .form-group
+                label Template Name *
+                input.form-control#name
+            .form-group
+                label Template URL
+                input.form-control#url(placeholder="/views/")
+            .form-group
+                span.btn.btn-success.js-create Create
+                a.btn.btn-danger(href="/") Cancel

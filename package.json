@@ -18,13 +18,21 @@
   },
   "homepage": "https://github.com/zefirks/puger#readme",
   "dependencies": {
+    "babel": "^6.23.0",
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.0.0",
+    "babel-polyfill": "^6.23.0",
     "body-parser": "^1.17.1",
     "codemirror": "^5.25.2",
     "colors": "^1.1.2",
     "eslint": "^3.19.0",
     "express": "^4.15.2",
+    "jquery": "^2.2.4",
     "js-beautify": "^1.6.12",
+    "lodash.debounce": "^4.0.8",
     "nodemon": "^1.11.0",
-    "pug": "^2.0.0-rc.1"
+    "pug": "^2.0.0-rc.1",
+    "rimraf": "^2.6.1",
+    "webpack": "^2.5.1"
   }
 }

@@ -18,6 +18,8 @@ const loger = require('./middlwares/loger.js');
 const {
     saveFile,
     read,
+    createFiles,
+    removeDir,
 } = require('./utils/');
 
 const app = express();
@@ -46,6 +48,13 @@ app.get('/', (req, res) => {
     });
 });
 
+function onError(res, error) {
+    res.status(500).send({
+        ok: false,
+        error: error.stack
+    });
+}
+
 app.post('/update/', (req, res) => {
     const {
         file,
@@ -54,19 +63,19 @@ app.post('/update/', (req, res) => {
         type
     } = req.body;
 
-    let action;
+    let action = Promise.resolve(null);
 
     try {
         action = type === 'pug'
         ? updatePug(value, JSON.parse(json))
         : updateView(file, JSON.parse(value));
     } catch (e) {
-        throw new Error(e);
-    } finally {
-        action.then(view => {
-            res.send(view);
-        });
+        return onError(res, e);
     }
+
+    action.then(view => {
+        res.send(view);
+    }).catch(onError.bind(null, res));
 });
 
 app.post('/save/', (req, res) => {
@@ -108,6 +117,26 @@ app.get('/views/*', (req, res) => {
     });
 });
 
+app.get('/new/', (req, res) => {
+    res.render('new');
+});
+
+app.post('/create/', (req, res) => {
+    const {
+        name, url
+    } = req.body;
+
+    const addr = join(templatesFolder, url, name);
+
+    createFiles(addr, name).then(() => {
+        res.json({
+            ok: true,
+            url: '/views/' + name
+        });
+    }).catch(onError.bind(null, res));
+
+});
+
 app.get('/view/', (req, res) => {
     const {
         type,
@@ -120,6 +149,23 @@ app.get('/view/', (req, res) => {
     });
 });
 
+app.post('/remove/:file/', (req, res) => {
+    const {
+        file
+    } = req.params;
+
+    const dirName = resolve(join(templatesFolder, file));
+
+    removeDir(dirName).then(() => res.json({
+        ok: true
+    })).catch(onError.bind(null, res));
+});
+
+/**
+ * @private
+ * @param {string} p - particles
+ * @return {Promise}
+ */
 function getView(p) {
     const particles = p.split('/');
     const viewDir = join.apply(null, [templatesFolder].concat(particles.slice(2)));
@@ -143,6 +189,12 @@ function updateView(file, data) {
     });
 }
 
+/**
+ * @private
+ * @param {string} pugfile
+ * @param {object} data
+ * @return {Promise}
+ */
 function updatePug(pugfile, data) {
     const compile = pug.compile(pugfile);
     return Promise.resolve(compile(data));
